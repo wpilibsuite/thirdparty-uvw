@@ -1,0 +1,55 @@
+import edu.wpi.first.nativeutils.NativeUtils
+
+plugins {
+    id 'edu.wpi.first.NativeUtils' version '1.6.4'
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext.licenseFile = file("$rootDir/LICENSE.txt")
+
+apply plugin: 'c'
+apply plugin: 'visual-studio'
+apply plugin: 'edu.wpi.first.NativeUtils'
+
+apply from: 'config.gradle'
+
+def outputsFolder = file("$buildDir/allOutputs")
+
+task copyAllOutputs(type: Copy) {
+    destinationDir outputsFolder
+}
+
+build.dependsOn copyAllOutputs
+
+ext.addTaskToCopyAllOutputs = { task ->
+    copyAllOutputs.dependsOn task
+    copyAllOutputs.inputs.file task.archivePath
+    copyAllOutputs.from task.archivePath
+}
+
+model {
+    components {
+       uvw(NativeLibrarySpec) {
+            sources {
+                c {
+                    source {
+                        srcDirs 'libuv/src'
+                        include '*.c'
+                    }
+                    exportedHeaders {
+                        srcDirs 'libuv/include', 'libuv/src'
+                    }
+                }
+            }
+        }
+    }
+}
+
+apply from: 'publish.gradle'
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.7'
+}
