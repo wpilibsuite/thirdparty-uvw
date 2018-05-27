@@ -106,15 +106,12 @@ model {
                             source {
                                 srcDirs 'libuv/src/unix'
                                 includes = [
-                                    'cygwin.c',
                                     'bsd-ifaddrs.c',
-                                    'no-fsevents.c',
-                                    'no-proctitle.c',
-                                    'posix-hrtime.c',
-                                    'posix-poll.c',
-                                    'procfs-exepath.c',
-                                    'sysinfo-loadavg.c',
-                                    'sysinfo-memory.c',
+                                    'darwin.c',
+                                    'darwin-proctitle.c',
+                                    'fsevents.c',
+                                    'kqueue.c',
+                                    'proctitle.c'
                                 ]
                             }
                             exportedHeaders {
