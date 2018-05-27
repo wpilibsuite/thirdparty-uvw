@@ -1,0 +1,6 @@
+[submodule "uvw"]
+	path = uvw
+	url = https://github.com/skypjack/uvw.git
+[submodule "libuv"]
+	path = libuv
+	url = https://github.com/libuv/libuv.git
