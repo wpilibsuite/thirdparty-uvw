@@ -1,5 +1,16 @@
 apply plugin: 'maven-publish'
 
+publishing {
+    repositories {
+        maven {
+            url "${System.getProperty('user.home')}/releases/maven/development"
+        }
+        maven {
+            url "${System.getProperty('user.home')}/releases/maven/release"
+        }
+    }
+}
+
 def pubVersion = '1.8.1-1.20.3'
 
 def baseArtifactId = 'uvw'
@@ -18,6 +29,10 @@ task cSourcesZip(type: Zip) {
     }
 
     from('libuv/src') {
+        into '/'
+    }
+
+    from('include') {
         into '/'
     }
 }
@@ -54,10 +69,10 @@ addTaskToCopyAllOutputs(cSourcesZip)
 
 model {
     publishing {
-        def UvTaskList = createComponentZipTasks($.components, 'uvw', zipBaseName, Zip, project, includeStandardZipFormat)
+        def UvTaskList = createComponentZipTasks($.components, 'uv', zipBaseName, Zip, project, includeStandardZipFormat)
         def allTask
         if (!project.hasProperty('jenkinsBuild')) {
-            allTask = createAllCombined(UvTaskList, 'uvw', zipBaseName, Zip, project)
+            allTask = createAllCombined(UvTaskList, 'uv', zipBaseName, Zip, project)
         }
 
         publications {

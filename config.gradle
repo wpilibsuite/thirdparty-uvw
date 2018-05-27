@@ -1,8 +1,10 @@
 import edu.wpi.first.nativeutils.*
 import org.gradle.internal.os.OperatingSystem
 
+def pragmaFile = project.file('src/pragmas.h')
+
 def windowsCompilerArgs = ['/EHsc', '/DNOMINMAX', '/Zi', '/FS', '/Zc:inline', '/MT']
-def windowsCCompilerArgs = ['/Zi', '/FS', '/Zc:inline', '/MT']
+def windowsCCompilerArgs = ['/Zi', '/FS', '/Zc:inline', '/MT', "/FIpragmas.h"]
 def windowsReleaseCompilerArgs = ['/O2']
 def windowsLinkerArgs = ['/DEBUG:FULL']
 def windowsReleaseLinkerArgs = ['/OPT:REF', '/OPT:ICF']

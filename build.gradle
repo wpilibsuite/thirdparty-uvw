@@ -1,7 +1,5 @@
-import edu.wpi.first.nativeutils.NativeUtils
-
 plugins {
-    id 'edu.wpi.first.NativeUtils' version '1.6.4'
+    id 'edu.wpi.first.NativeUtils' version '1.6.7'
 }
 
 repositories {
@@ -32,15 +30,118 @@ ext.addTaskToCopyAllOutputs = { task ->
 
 model {
     components {
-       uvw(NativeLibrarySpec) {
+       uv(NativeLibrarySpec) {
             sources {
                 c {
                     source {
                         srcDirs 'libuv/src'
                         include '*.c'
+                        exclude 'uv-common.c'
                     }
                     exportedHeaders {
-                        srcDirs 'libuv/include', 'libuv/src'
+                        srcDirs 'libuv/include', 'libuv/src', 'include'
+                    }
+                }
+                cCommon(CSourceSet) {
+                    source {
+                        srcDirs 'libuv/src'
+                        include 'uv-common.c'
+                    }
+                    exportedHeaders {
+                        srcDirs 'libuv/include', 'libuv/src', 'include'
+                    }
+                }
+            }
+            binaries.all { binary ->
+                if (binary.targetPlatform.operatingSystem.name != 'windows') {
+                    binary.sources {
+                        unixC(CSourceSet) {
+                            source {
+                                srcDirs 'libuv/src/unix'
+                                includes = [
+                                    'async.c',
+                                    'atomic-ops.h',
+                                    'core.c',
+                                    'dl.c',
+                                    'fs.c',
+                                    'getaddrinfo.c',
+                                    'getnameinfo.c',
+                                    'internal.h',
+                                    'loop-watcher.c',
+                                    'loop.c',
+                                    'pipe.c',
+                                    'poll.c',
+                                    'process.c',
+                                    'signal.c',
+                                    'spinlock.h',
+                                    'stream.c',
+                                    'tcp.c',
+                                    'thread.c',
+                                    'timer.c',
+                                    'tty.c',
+                                    'udp.c',
+                                ]
+                            }
+                            exportedHeaders {
+                                srcDirs 'libuv/include', 'libuv/src'
+                            }
+                        }
+                    }
+                }
+                if (binary.targetPlatform.operatingSystem.name == 'windows') {
+                    binary.sources {
+                        windowsC(CSourceSet) {
+                            source {
+                                srcDirs 'libuv/src/win'
+                                include '*.c'
+                            }
+                            exportedHeaders {
+                                srcDirs 'libuv/include', 'libuv/src', 'include'
+                            }
+                        }
+                    }
+                } else if (binary.targetPlatform.operatingSystem.name == 'osx') {
+                    binary.sources {
+                        macC(CSourceSet) {
+                            source {
+                                srcDirs 'libuv/src/unix'
+                                includes = [
+                                    'cygwin.c',
+                                    'bsd-ifaddrs.c',
+                                    'no-fsevents.c',
+                                    'no-proctitle.c',
+                                    'posix-hrtime.c',
+                                    'posix-poll.c',
+                                    'procfs-exepath.c',
+                                    'sysinfo-loadavg.c',
+                                    'sysinfo-memory.c',
+                                ]
+                            }
+                            exportedHeaders {
+                                srcDirs 'libuv/include', 'libuv/src'
+                            }
+                        }
+                    }
+                } else {
+                    binary.sources {
+                        linuxC(CSourceSet) {
+                            source {
+                                srcDirs 'libuv/src/unix'
+                                includes = [
+                                    'linux-core.c',
+                                    'linux-inotify.c',
+                                    'linux-syscalls.c',
+                                    'linux-syscalls.h',
+                                    'procfs-exepath.c',
+                                    'proctitle.c',
+                                    'sysinfo-loadavg.c',
+                                    'sysinfo-memory.c',
+                                ]
+                            }
+                            exportedHeaders {
+                                srcDirs 'libuv/include', 'libuv/src'
+                            }
+                        }
                     }
                 }
             }
