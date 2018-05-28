@@ -89,6 +89,9 @@ model {
                     }
                 }
                 if (binary.targetPlatform.operatingSystem.name == 'windows') {
+                    if (binary in SharedLibraryBinarySpec) {
+                        binary.cCompiler.define 'BUILDING_UV_SHARED'
+                    }
                     binary.sources {
                         windowsC(CSourceSet) {
                             source {
