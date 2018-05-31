@@ -4,3 +4,5 @@ build/
 .project
 .settings/
 .vscode/
+buildcmake*/
+test/
